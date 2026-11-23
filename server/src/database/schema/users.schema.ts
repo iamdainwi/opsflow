@@ -9,11 +9,14 @@ import { createId } from '@paralleldrive/cuid2';
 export const users = mysqlTable('users', {
   id: varchar({ length: 256 })
     .$defaultFn(() => createId())
-    .primaryKey(),
+    .primaryKey()
+    .notNull(),
   name: varchar({ length: 256 }).notNull(),
-  email: varchar({ length: 256 }).notNull().unique(),
+  email: varchar({ length: 256 }).unique().notNull(),
   password: varchar({ length: 256 }).notNull(),
-  roles: mysqlEnum(['employee', 'manager', 'admin']).default('employee'),
+  roles: mysqlEnum(['employee', 'manager', 'admin'])
+    .default('employee')
+    .notNull(),
   created_at: timestamp().defaultNow().notNull(),
 });
 

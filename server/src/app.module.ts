@@ -11,7 +11,7 @@ import { drizzle } from 'drizzle-orm/mysql2';
     UsersModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../.env',
+      // envFilePath: 'D:\\Developer\\opsflow\\.env',
     }),
     DrizzleModule.forRoot({
       drizzle,
