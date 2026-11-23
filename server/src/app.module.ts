@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { UsersModule } from './users/users.module.js';
+import { DrizzleModule } from '@nestjs/drizzle';
+import { drizzle } from 'drizzle-orm/node-mssql';
 
 @Module({
-  imports: [],
+  imports: [
+    UsersModule,
+    DrizzleModule.forRoot({ drizzle, connection: process.env.DATABASE_URL! }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
