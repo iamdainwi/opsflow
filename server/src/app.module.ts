@@ -6,8 +6,6 @@ import { ConfigModule } from '@nestjs/config';
 import { DrizzleModule } from '@nestjs/drizzle';
 import { drizzle } from 'drizzle-orm/mysql2';
 import { AuthModule } from './auth/auth.module.js';
-import { UsersModule } from './users/users.module.js';
-import { AuthModule } from './auth/auth.module.js';
 
 @Module({
   imports: [
