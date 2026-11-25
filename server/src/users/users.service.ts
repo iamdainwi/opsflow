@@ -31,7 +31,7 @@ export class UsersService {
       });
       return result;
     } catch (error: unknown | any) {
-      throw error;
+      throw new Error(error);
     }
   }
 
