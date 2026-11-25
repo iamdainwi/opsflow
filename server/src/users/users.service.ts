@@ -41,8 +41,11 @@ export class UsersService {
       .from(users);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    return await this.db
+      .select({ name: users.name, email: users.email, roles: users.roles })
+      .from(users)
+      .where(eq(users.id, id));
   }
 
   async findOneByEmail(email: string) {
