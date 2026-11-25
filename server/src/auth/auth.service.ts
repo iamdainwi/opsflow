@@ -1,32 +1,45 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto.js';
-import { UpdateAuthDto } from './dto/update-auth.dto.js';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service.js';
-import bcrypt from 'bcrypt';
+import { LoginUserDto, RegisterUserDto } from './dto/auth.dto.js';
+import { PasswordHasher } from '@nestjs/authentication';
 @Injectable()
 export class AuthService {
-  constructor(private readonly userServices: UsersService) {}
-  async create(createAuthDto: CreateAuthDto) {
-    const hashedPassword = await bcrypt.hash(createAuthDto.password, 10);
+  constructor(
+    private readonly userServices: UsersService,
+    private readonly passwordHasher: PasswordHasher,
+  ) {}
+
+  async create(registerUserDto: RegisterUserDto) {
+    const hashedPassword = await this.passwordHasher.hash(
+      registerUserDto.password,
+    );
     return await this.userServices.create({
-      ...createAuthDto,
+      ...registerUserDto,
       password: hashedPassword,
     });
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
+  async verify(loginUserDto: LoginUserDto) {
+    const found = await this.userServices.findOneByEmail(loginUserDto.email);
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+    if (!found) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+    const valid = await this.passwordHasher.verify(
+      loginUserDto.password,
+      found.password,
+    );
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    if (!valid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return {
+      id: found.id,
+      name: found.name,
+      email: found.email,
+      role: found.role,
+    };
   }
 }

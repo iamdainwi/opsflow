@@ -45,6 +45,22 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
+  async findOneByEmail(email: string) {
+    const [user] = await this.db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        password: users.password,
+        role: users.roles,
+      })
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    return user;
+  }
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
